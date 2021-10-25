@@ -1,8 +1,8 @@
 {
     "assets": 
     {
-        "stock_symbols": ["SPY", "TLT", "XOM", "QQQ", "ZM"],
-        "crypto_symbols": ["BTC-USD", "ETH-USD"]
+        "stock_symbols": ["BBY", "JD", "MGM"],
+        "crypto_symbols": ["BTC-USD", "VET-USD"]
     },
     "kelly_fraction": 0.15,
     "max_lookback_years": 5,
@@ -11,22 +11,11 @@
     "use_Ledoit_Wolf": true,
     "max_position_size": 0.99,
     "expected_annual_excess_return_rates": {
-        "SPY": 0.05,
-        "TLT": 0.02,
-        "XOM": 0.03,
-        "QQQ": 0.07,
-        "BTC-USD": 0.07,
-        "ETH-USD": 0.07,
-        "ZM": 0.05
+
     },
-    "capital": 1000000,
+    "capital": 11000,
     "position_sizes": {
-        "SPY": 0.40,
-        "TLT": 0.20,
-        "XOM": 0.10,
-        "AAPL": 0.15,
-        "BTC-USD": 0.10,
-        "ETH-USD": 0.05
+
     }
 }
 

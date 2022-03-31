@@ -54,7 +54,7 @@ def load_prices(config:Dict)->pd.DataFrame:
             cols = [('Close', x) for x in symbols]
             price_data = price_data[cols]
             price_data.columns = price_data.columns.get_level_values(1)
-            price_data.to_csv('sample_data.csv', header=True)
+            price_data.to_csv(r'KellyPortfolio\records\sample_data.csv', header=True)
     price_data = price_data.sort_index()
     return price_data
 
@@ -127,7 +127,7 @@ def kelly_optimize(M_df:pd.DataFrame, C_df:pd.DataFrame, config:Dict)->pd.DataFr
     kelly = pd.DataFrame(kelly, index=C_df.columns, columns=['Weights'])
     return kelly
 
-def display_results(df:pd.DataFrame, config:Dict, msg:str)->None:
+def display_results(df:pd.DataFrame, config:Dict, msg:str, df_label:str)->None:
     "display asset allocations"
     df['Capital_Allocation'] = df['Weights'] * config['capital']
     print(msg)
@@ -135,6 +135,9 @@ def display_results(df:pd.DataFrame, config:Dict, msg:str)->None:
     cash = config['capital'] - df['Capital_Allocation'].sum()
     print('Cash:', np.round(cash))
     print('*'*100)
+    if df_label is not None: #only save desired files
+        dfx = df.round(2)
+        dfx.to_csv(r'KellyPortfolio\records\ '+ df_label+'.csv')
 
 def kelly_implied(covar:pd.DataFrame, config:Dict)->pd.DataFrame:
     "caculate return rates implied from allocation weights: mu = C*F"
@@ -185,15 +188,15 @@ def main():
     print(correlation_from_covariance(covar).round(2))
     print('*'*100)
     unc_kelly_weights = kelly_optimize_unconstrained(mu, covar)
-    display_results(unc_kelly_weights, config, 'Unconstrained Kelly Weights (no constraints on shorting or leverage')
+    display_results(unc_kelly_weights, config, 'Unconstrained Kelly Weights (no constraints on shorting or leverage', None)
     print('Begin optimization')
     kelly_weights = kelly_optimize(mu, covar, config)
     print('*'*100)
-    display_results(kelly_weights, config, 'Allocation With Full Kelly Weights')
+    display_results(kelly_weights, config, 'Allocation With Full Kelly Weights', None)
     kelly_fraction = float(config['kelly_fraction'])
     partial_kelly = kelly_fraction*kelly_weights
     display_results(partial_kelly, config,
-                    'Allocation With Partial Kelly Fraction:'+str(kelly_fraction))
+                    'Allocation With Partial Kelly Fraction:'+str(kelly_fraction), "PK_results")
     return 0
 
 
@@ -204,4 +207,6 @@ if __name__ == '__main__':
     PARSER.add_argument('--implied', action="store")
     PARSER.add_argument('--estimation_mode', action="store")
     OPTIONS = PARSER.parse_args()
+    sys.stdout = open(r"C:\Users\phil\pylab\KellyPortfolio\records\stdoutlog.txt", 'w')
     main()
+    sys.stdout.close()
